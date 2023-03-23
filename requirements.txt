@@ -4,5 +4,6 @@
 ##### Please reach out to ben@benbox.org for any questions
 ### All needed libraries (and their versions)
 streamlit==1.20.0
+extra_streamlit_components
 pygsheets
 googledrivedownloader

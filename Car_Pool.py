@@ -4,6 +4,8 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
+import extra_streamlit_components as stx
+import platform
 import pandas as pd
 import numpy as np
 import os
@@ -11,8 +13,6 @@ from google_drive_downloader import GoogleDriveDownloader
 import pygsheets
 import shutil
 from datetime import datetime
-import platform
-
 
 
 
