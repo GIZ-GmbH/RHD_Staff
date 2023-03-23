@@ -9,8 +9,6 @@ import streamlit_scrollable_textbox as sty
 import platform
 import pandas as pd
 import numpy as np
-import cv2
-import mysql.connector
 import os
 from google_drive_downloader import GoogleDriveDownloader
 import pygsheets
@@ -221,101 +219,6 @@ def google_sheet_credentials():
 
 
 
-### Function: init_connection = Initial SQL connection
-def init_connection():
-    try:
-        ## Initialize connection
-        return mysql.connector.connect(**st.secrets["mysql_car"])
-    except:
-        print("An exception occurred in function `init_connection`")
-        st.error(body = 'Databank connection timeout!', icon = "🚨")
-        st.stop()
-
-
-
-### Function: run_query = SQL query
-def run_query(query):
-    with conn.cursor() as cur:
-        # Perform query
-        try:
-            cur.execute(query)
-            return cur.fetchall()
-
-        except:
-            print('An exception occurred in function `run_query` with query \"' + query + '\"')
-
-
-
-### Function: lastID = checks for last ID number in Table (to add data after)
-def lastID(url):
-    query = "SELECT MAX(ID) FROM %s;" % (url)
-    rows = run_query(query)
-
-    # Check for ID
-    for row in rows:
-        if (row[0] != None):
-            id = int(row[0]) + 1
-        else:
-            id = 1
-            break
-
-    # Return ID
-    return id
-
-
-
-### Function: check_vehicles = checking for unique Vehicles IDs
-def check_vehicles(column, data):
-    vehicle = []
-    i = 0
-    while i < len(data):
-        if i > 0:
-            x = 0
-            double = False
-            for x in range(len(vehicle)):
-                if (vehicle[x] == data[column][i + 1]):
-                    double = True
-            if (double != True):
-                vehicle.append(data[column][i + 1])
-        else:
-            vehicle.append(data[column][i + 1])
-        i += 1
-    return vehicle
-
-
-
-### Function: pictureUploaderDrivers = uploads driver images
-def pictureUploaderDrivers(image, index):
-    # Initialize connection
-    connection = mysql.connector.connect(**st.secrets["mysql_car"])
-    cursor = connection.cursor()
-
-    # SQL statement
-    sql_insert_blob_query = """ UPDATE DRIVERS SET DRIVER_IMAGE = %s WHERE ID = %s;"""
-
-    # Convert data into tuple format
-    insert_blob_tuple = (image, index)
-    result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-    connection.commit()
-
-
-
-### Function: pictureUploaderVehicles = Uploads vehicle images
-def pictureUploaderVehicles(image, index):
-    # Initialize connection
-    connection = mysql.connector.connect(**st.secrets["mysql_car"])
-    cursor = connection.cursor()
-
-    # SQL statement
-    sql_insert_blob_query = """ UPDATE VEHICLES SET VEHICLE_IMAGE = %s WHERE ID = %s;"""
-
-    # Convert data into tuple format
-    insert_blob_tuple = (image, index)
-    result = cursor.execute(sql_insert_blob_query, insert_blob_tuple)
-    connection.commit()
-
-
-
 
 #### Two versions of the page -> Landing page vs. Car Pool
 ### Logged in state (Car Fleet Management System)
@@ -337,7 +240,7 @@ if check_password():
 
     ### Custom Tab with IDs
     chosen_id = stx.tab_bar(data = [
-        stx.TabBarItemData(id = 1, title = "Trips", description = "can see open Trips"),
+        stx.TabBarItemData(id = 1, title = "Hitchhiker", description = "can see open Trips"),
         stx.TabBarItemData(id = 2, title = "Driver", description = "can enter Trips"),
     ], default = 1)
     with st.form("Car Pool", clear_on_submit = True):
