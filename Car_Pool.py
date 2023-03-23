@@ -280,6 +280,12 @@ if check_password():
             time_end = str(time[1])
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
+            
+            # Read worksheet first to add data
+            try:
+                data = wks.get_as_df()
+            except Exception as e:
+                print('Exception in read of Google Sheet', e)
 
         
         ## Submit button
