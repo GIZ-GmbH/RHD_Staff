@@ -273,7 +273,7 @@ if check_password():
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time = st.slider('Departure Time', value = (time(11, 30), time(12, 45)))
+            time = st.slider('Departure Time', value = (time(11, 30), time(12, 45))
             time = time[0]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
