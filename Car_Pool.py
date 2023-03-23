@@ -24,8 +24,6 @@ try:
         layout = "centered",
         initial_sidebar_state = "expanded",
         menu_items = {
-            'Get Help': st.secrets['custom']['menu_items_help'],
-            'Report a bug': st.secrets['custom']['menu_items_bug'],
             'About': '**Car Pool**'
         }
     )
