@@ -263,9 +263,22 @@ if check_password():
             except Exception as e:
                 print('Exception in read of Google Sheet', e)
 
-                
+
+        ## tab `Requester`
+        elif (f"{chosen_id}" == '3'):
+            st.title('Request')
+            st.subheader('Aks for a Trip')
+            name = st.text_input('Name')
+            phone = st.text_input('Phone')
+            dep = st.text_input('Departure')
+            des = st.text_input('Destination')
+            date = st.date_input('Date')
+            time = st.time_input('Time')
+            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
+
+        
         ## Submit button
-        submitted = st.form_submit_button('Submit', key = 'Driver')
+        submitted = st.form_submit_button('Submit')
         if submitted:
             # Creating numpy array
             data = np.array(data)
@@ -284,25 +297,6 @@ if check_password():
                 print('Updated Google Sheet')
             except Exception as e:
                 print('No Update to Google Sheet', e)
-
-
-        ## tab `Requester`
-        elif (f"{chosen_id}" == '3'):
-            st.title('Request')
-            st.subheader('Aks for a Trip')
-            name = st.text_input('Name')
-            phone = st.text_input('Phone')
-            dep = st.text_input('Departure')
-            des = st.text_input('Destination')
-            date = st.date_input('Date')
-            time = st.time_input('Time')
-            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
-    
-
-        ## Submit button
-        submitted = st.form_submit_button('Submit')
-        if submitted:
-            print('Request')
             
             
             
