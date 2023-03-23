@@ -214,9 +214,10 @@ if check_password():
     chosen_id = stx.tab_bar(data = [
         stx.TabBarItemData(id = 1, title = "Hitchhiker", description = "can see open Trips"),
         stx.TabBarItemData(id = 2, title = "Driver", description = "can enter Trips"),
+        stx.TabBarItemData(id = 3, title = "Requester", description = "can ask for a Trip"),
     ], default = 1)
     with st.form("Car Pool", clear_on_submit = True):
-        ## tab `Trips`
+        ## tab `Hitchhiker`
         if (f"{chosen_id}" == '1'):
             st.title('Hitchhiker')
             st.subheader('Look for a trip')
@@ -285,7 +286,22 @@ if check_password():
                 print('No Update to Google Sheet', e)
 
 
-            
+        ## tab `Requester`
+        elif (f"{chosen_id}" == '3'):
+            st.title('Request')
+            st.subheader('Aks for a Trip')
+            dep = st.text_input('Departure')
+            des = st.text_input('Destination')
+            date = st.date_input('Date')
+            time = st.time_input('Time')
+            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
+    
+
+            ## Submit button
+            submitted = st.form_submit_button('Submit')
+            if submitted:
+                print('Request')
+                
     #### Outside the form
     
 ### Not Logged in state (Landing page)
