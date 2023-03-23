@@ -290,6 +290,6 @@ if check_password():
     
 ### Not Logged in state (Landing page)
 else:
-    landing_page('Car Pool.')
+    landing_page('GIZ MW Car Pool')
 
 
