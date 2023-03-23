@@ -267,13 +267,13 @@ if check_password():
         ## tab `Requester`
         elif (f"{chosen_id}" == '3'):
             st.title('Request')
-            st.subheader('Aks for a Trip')
+            st.subheader('Ask for a Trip')
             name = st.text_input('Name')
             phone = st.text_input('Phone')
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time = st.time_input('Time')
+            time = st.slider('Departure Time', value = (time(11, 30), time(12, 45)))
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
 
         
