@@ -290,6 +290,8 @@ if check_password():
         elif (f"{chosen_id}" == '3'):
             st.title('Request')
             st.subheader('Aks for a Trip')
+            name = st.text_input('Name')
+            phone = st.text_input('Phone')
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
