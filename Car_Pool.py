@@ -14,6 +14,7 @@ from datetime import datetime
 
 
 
+
 #### Streamlit initial setup
 try:
     st.set_page_config(
@@ -29,43 +30,6 @@ try:
     )
 except Exception as e:
     print(e)
-
-
-
-
-#### OS Check
-### Check for 3 different platforms
-## Check which OS
-plt = platform.system()
-if plt == "Windows":
-    print("Your system is Windows")
-elif plt == "Linux":
-    print("Your system is Linux")
-elif plt == "Darwin":
-    print("Your system is MacOS")
-
-
-
-
-#### Query parameters
-## Get param `EMPLOYE_NO`
-eno = st.experimental_get_query_params()
-
-
-## Get params for trainings / workshops
-# [code]
-
-
-
-
-#### Initialization of session states
-## Session states
-if ('admin' not in st.session_state):
-    st.session_state['admin'] = False
-if ('logout' not in st.session_state):
-    st.session_state['logout'] = False
-if ('header' not in st.session_state):
-    st.session_state['header'] = True
 
 
 
