@@ -34,6 +34,18 @@ except Exception as e:
 
 
 
+#### Initialization of session states
+## Session states
+if ('admin' not in st.session_state):
+    st.session_state['admin'] = False
+if ('logout' not in st.session_state):
+    st.session_state['logout'] = False
+if ('header' not in st.session_state):
+    st.session_state['header'] = True
+
+
+
+
 #### All functions used exclusively in Car Fleet Management
 ### Function: check_password = Password / user checking
 def check_password():
