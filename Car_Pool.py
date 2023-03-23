@@ -231,7 +231,7 @@ if check_password():
             # Convert numpy in pandas dataframe
             actual_data = []
             data["ID"] = data.index + 1
-            data = pd.DataFrame(data = data, columns = ["ID", "Driver", "Phone", "Departure", "Destination", "Date", "Time", "Seats"])
+            data = pd.DataFrame(data = data, columns = ["ID", "Driver", "Phone", "Departure", "Destination", "Date", "Time", "Seats", "Request"])
             data = data.set_index('ID')
             print(data)
             for idx, row in data.iterrows():
@@ -240,9 +240,8 @@ if check_password():
                 print(datetime.now())
                 if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now():
                     actual_data.append(row)
-
+            request = ''
             st.dataframe(actual_data)
-            
 
 
         ## tab `Driver`
@@ -256,6 +255,7 @@ if check_password():
             date = st.date_input('Date')
             time = st.time_input('Time')
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
+            request = 'FALSE'
 
             # Read worksheet first to add data
             try:
@@ -274,30 +274,33 @@ if check_password():
             des = st.text_input('Destination')
             date = st.date_input('Date')
             time = st.slider('Departure Time', value = (time(11, 30), time(12, 45)))
+            time = time[0]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
+            request = 'TRUE'
 
         
         ## Submit button
         submitted = st.form_submit_button('Submit')
         if submitted:
-            # Creating numpy array
-            data = np.array(data)
-    
-            # Add data to existing
-            newrow = np.array([name, phone, dep, des, str(date), str(time), seats])
-            data = np.vstack((data, newrow))
-    
-            # Converting numby array to list
-            data = data.tolist()
-    
-            # Writing to worksheet
-            try:
-                wks.update_values(crange = 'A2', values = data)
-                st.session_state['google'] = True
-                print('Updated Google Sheet')
-            except Exception as e:
-                print('No Update to Google Sheet', e)
-            
+            if request != '':
+                # Creating numpy array
+                data = np.array(data)
+        
+                # Add data to existing
+                newrow = np.array([name, phone, dep, des, str(date), str(time), seats, request])
+                data = np.vstack((data, newrow))
+        
+                # Converting numby array to list
+                data = data.tolist()
+        
+                # Writing to worksheet
+                try:
+                    wks.update_values(crange = 'A2', values = data)
+                    st.session_state['google'] = True
+                    print('Updated Google Sheet')
+                except Exception as e:
+                    print('No Update to Google Sheet', e)
+                
             
             
             
