@@ -1,4 +1,4 @@
-##### `🚗 Car_Pool.py`
+##### `Car_Pool.py`
 ##### Car Pool
 ##### Open-Source, hosted on https://github.com/DrBenjamin/Car_Pool
 ##### Please reach out to ben@benbox.org for any questions
