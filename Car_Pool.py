@@ -275,7 +275,6 @@ if check_password():
             date = st.date_input('Date')
             time = st.slider('Departure Time', value = (time(11, 30), time(12, 45)))
             st.write(time)
-            time = time[0]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
 
