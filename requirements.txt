@@ -1,0 +1,8 @@
+##### `requirements.txt`
+##### HR Staff Portal
+##### Open-Source, hostet on https://github.com/DrBenjamin/HRStaffPortal
+##### Please reach out to ben@benbox.org for any questions
+### All needed libraries (and their versions)
+streamlit==1.20.0
+pygsheets
+googledrivedownloader

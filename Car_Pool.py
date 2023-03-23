@@ -4,9 +4,6 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import extra_streamlit_components as stx
-import streamlit_scrollable_textbox as sty
-import platform
 import pandas as pd
 import numpy as np
 import os
