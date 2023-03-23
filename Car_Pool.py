@@ -265,7 +265,7 @@ if check_password():
 
                 
         ## Submit button
-        submitted = st.form_submit_button('Submit')
+        submitted = st.form_submit_button('Submit', key = 'Driver')
         if submitted:
             # Creating numpy array
             data = np.array(data)
@@ -297,11 +297,14 @@ if check_password():
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
     
 
-            ## Submit button
-            submitted = st.form_submit_button('Submit')
-            if submitted:
-                print('Request')
-                
+        ## Submit button
+        submitted = st.form_submit_button('Submit')
+        if submitted:
+            print('Request')
+            
+            
+            
+            
     #### Outside the form
     
 ### Not Logged in state (Landing page)
