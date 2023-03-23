@@ -238,7 +238,7 @@ if check_password():
                 print(idx, row)
                 print(datetime.strptime(row['Date'], '%d/%m/%Y'))
                 print(datetime.now())
-                if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now():
+                if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now() and row['Request'] == 'FALSE':
                     actual_data.append(row)
             request = ''
             st.dataframe(actual_data)
@@ -273,7 +273,8 @@ if check_password():
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time = st.slider('Departure Time', value = (time(11, 30), time(12, 45))
+            time = st.slider('Departure Time', value = (time(11, 30), time(12, 45)))
+            st.write(time)
             time = time[0]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
