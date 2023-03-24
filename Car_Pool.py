@@ -14,6 +14,11 @@ import pygsheets
 import shutil
 from datetime import datetime
 from datetime import time
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
 
 
 
@@ -208,7 +213,22 @@ if check_password():
     # Opening sheet
     sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
     wks = sh.sheet1
+    
+    
+    ## Check for Requests
+    # Read worksheet first to add data
+    try:
+        data = wks.get_as_df()
+    except Exception as e:
+        print('Exception in read of Google Sheet', e)
 
+    # Convert numpy in pandas dataframe
+    actual_data = []
+    data["ID"] = data.index + 1
+    data = pd.DataFrame(data = data,
+                        columns = ["ID", "Driver", "Phone", "Mail", "Departure", "Destination", "Date", "Time", "Time_End", "Seats", "Request"])
+    data = data.set_index('ID')
+    
 
 
     ### Custom Tab with IDs
@@ -223,22 +243,8 @@ if check_password():
             st.title('Hitchhiker')
             st.subheader('Look for a trip')
             
-            # Read worksheet first to add data
-            try:
-                data = wks.get_as_df()
-            except Exception as e:
-                print('Exception in read of Google Sheet', e)
-            
-            # Convert numpy in pandas dataframe
-            actual_data = []
-            data["ID"] = data.index + 1
-            data = pd.DataFrame(data = data, columns = ["ID", "Driver", "Phone", "Mail", "Departure", "Destination", "Date", "Time", "Time_End", "Seats", "Request"])
-            data = data.set_index('ID')
-            print(data)
+            # Search for trips in the future
             for idx, row in data.iterrows():
-                print(idx, row)
-                print(datetime.strptime(row['Date'], '%d/%m/%Y'))
-                print(datetime.now())
                 if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now() and row['Request'] == 'FALSE':
                     actual_data.append(row)
             request = ''
