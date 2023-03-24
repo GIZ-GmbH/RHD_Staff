@@ -255,7 +255,7 @@ if check_password():
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time = st.time_input('Start Time')
+            time_start = st.time_input('Start Time')
             time_end = st.time_input('Approx. Arrival')
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'FALSE'
@@ -278,9 +278,9 @@ if check_password():
             des = st.text_input('Destination')
             date = st.date_input('Date')
             time = st.slider('Departure Time (range)', value = (time(11, 30), time(12, 45)))
-            time = str(time[0])
-            st.experimental_show(time)
+            time_start = str(time[0])
             time_end = str(time[1])
+            st.experimental_show(time)
             st.experimental_show(time_end)
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
@@ -299,7 +299,7 @@ if check_password():
                 data = np.array(data)
         
                 # Add data to existing
-                newrow = np.array([name, phone, mail, dep, des, str(date), str(time), str(time_end), seats, request])
+                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, request])
                 data = np.vstack((data, newrow))
         
                 # Converting numby array to list
