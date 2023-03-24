@@ -261,16 +261,12 @@ if check_password():
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time_start = str(st.time_input('Start Time'))
-            time_end = str(st.time_input('Approx. Arrival'))
+            time_start = st.time_input('Start Time')
+            time_end = st.time_input('Approx. Arrival')
+            st.experimental_show(time_start)
+            st.experimental_show(time_end)
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'FALSE'
-
-            # Read worksheet first to add data
-            try:
-                data = wks.get_as_df()
-            except Exception as e:
-                print('Exception in read of Google Sheet', e)
 
 
         ## tab `Requester`
@@ -284,15 +280,10 @@ if check_password():
             des = st.text_input('Destination')
             date = st.date_input('Date')
             time = st.slider('Arrival time (range)', value = (time(11, 30), time(12, 45)))
-            time_start = str(time[0])
-            time_end = str(time[1])
+            time_start = time[0]
+            time_end = time[1]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
-            # Read worksheet first to add data
-            try:
-                data = wks.get_as_df()
-            except Exception as e:
-                print('Exception in read of Google Sheet', e)
 
         
         ## Submit button
