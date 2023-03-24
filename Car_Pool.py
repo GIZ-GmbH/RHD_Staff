@@ -12,7 +12,9 @@ from google_drive_downloader import GoogleDriveDownloader
 import pygsheets
 import shutil
 from datetime import datetime
+from datetime import date
 from datetime import time
+from datetime import timedelta
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -201,6 +203,17 @@ def google_sheet_credentials():
 
 
 
+### Function read_sheet = Read data from Google Sheet
+@st.cache_data
+def read_sheet():
+    try:
+        data = wks.get_as_df()
+    except Exception as e:
+        print('Exception in read of Google Sheet', e)
+    return data
+
+
+
 ### Function: send_mail = Email sending
 def send_mail(subject, body, receiver, attachment = None):
     ## Creating the SMTP server object by giving SMPT server address and port number
@@ -271,18 +284,6 @@ if check_password():
     # Opening sheet
     sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
     wks = sh.sheet1
-    
-    
-    ## Check for Requests
-    # Read worksheet first to add data
-    try:
-        all_data = wks.get_as_df()
-    except Exception as e:
-        print('Exception in read of Google Sheet', e)
-
-    # Set index
-    all_data["ID"] = all_data.index + 1
-    all_data = all_data.set_index('ID')
 
 
 
@@ -292,24 +293,39 @@ if check_password():
         stx.TabBarItemData(id = 2, title = "Driver", description = "can enter Trips"),
         stx.TabBarItemData(id = 3, title = "Requester", description = "can ask for a Trip"),
     ], default = st.session_state['index'])
-    with st.form("Car Pool", clear_on_submit = True):
-        ## tab `Hitchhiker`
-        if (f"{chosen_id}" == '1'):
+    
+    
+    ## tab `Hitchhiker`
+    if (f"{chosen_id}" == '1'):
+        with st.expander('', expanded = True):
             st.title('Hitchhiker')
             st.subheader('Look for a trip')
+    
+            # Set range of date with st.slider
+            range_date = st.slider('Search a trip on these dates', value = (date.today(), date.today() + timedelta(days = 30)), min_value = date.today(),
+                                   max_value = date.today() + timedelta(days = 150))
+
+            # Read worksheet first to add data
+            all_data = read_sheet()
+
+            # Set index
+            all_data["ID"] = all_data.index + 1
+            all_data = all_data.set_index('ID')
             
             # Search for trips in the future
             actual_data = []
             for idx, row in all_data.iterrows():
-                if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now() and row['Request'] == 'FALSE':
+                if (datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) <= range_date[1]) and row['Request'] == 'FALSE':
                     actual_data.append(row)
-            request = ''
-            button = 'Request'
-            st.dataframe(actual_data)
+            actual_data = pd.DataFrame(actual_data)
+            try:
+                st.dataframe(actual_data[['Driver', 'Phone', 'Mail', 'Departure', 'Destination', 'Date', 'Start', 'Arrival', 'Seats']].head(10))
+            except:
+                st.warning(body = 'No Trips in this range!', icon = "🚨")
 
-
-        ## tab `Driver`
-        elif (f"{chosen_id}" == '2'):
+    ## tab `Driver`
+    elif (f"{chosen_id}" == '2'):
+        with st.form("Car Pool Driver", clear_on_submit = True):
             st.title('Drivers')
             st.subheader('Enter a Trip')
             name = st.text_input('Name')
@@ -321,12 +337,37 @@ if check_password():
             time_start = st.time_input('Start Time', value = time(11, 30))
             time_end = st.time_input('Approx. Arrival', value = time(12, 45))
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
-            request = 'FALSE'
-            button = 'Enter'
+            
+            
+            ## Submit button
+            submitted = st.form_submit_button('Submit')
+            if submitted:
+                # Read worksheet first to add data
+                data = read_sheet()
+        
+                # Creating numpy array
+                data = np.array(data)
+        
+                # Add data to existing
+                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, 'FALSE'])
+                data = np.vstack((data, newrow))
+        
+                # Converting numby array to list
+                data = data.tolist()
+        
+                # Writing to worksheet
+                try:
+                    wks.update_values(crange = 'A2', values = data)
+                    st.session_state['google'] = True
+                    print('Updated Google Sheet')
+                    read_sheet.clear()
+                except Exception as e:
+                    print('No Update to Google Sheet', e)
 
 
-        ## tab `Requester`
-        elif (f"{chosen_id}" == '3'):
+    ## tab `Requester`
+    elif (f"{chosen_id}" == '3'):
+        with st.form("Car Pool Requester", clear_on_submit = True):
             st.title('Request')
             st.subheader('Ask for a Trip')
             name = st.text_input('Name')
@@ -339,41 +380,33 @@ if check_password():
             time_start = time[0]
             time_end = time[1]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
-            request = 'TRUE'
-            button = 'Ask'
 
         
-        ## Submit button
-        submitted = st.form_submit_button(button)
-        if submitted:
-            if request != '':
+            ## Submit button
+            submitted = st.form_submit_button('Ask')
+            if submitted:
                 # Read worksheet first to add data
-                try:
-                    data = wks.get_as_df()
-                except Exception as e:
-                    print('Exception in read of Google Sheet', e)
+                data = read_sheet()
                     
                 # Creating numpy array
                 data = np.array(data)
-        
+            
                 # Add data to existing
-                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, request])
+                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, 'TRUE'])
                 data = np.vstack((data, newrow))
-        
+            
                 # Converting numby array to list
                 data = data.tolist()
-        
+            
                 # Writing to worksheet
                 try:
                     wks.update_values(crange = 'A2', values = data)
                     st.session_state['google'] = True
                     print('Updated Google Sheet')
+                    read_sheet.clear()
                 except Exception as e:
                     print('No Update to Google Sheet', e)
-            else:
-                st.session_state['index'] = 3
-                st.experimental_rerun()
-            
+                
             
             
             
