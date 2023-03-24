@@ -4,7 +4,6 @@
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st
-import extra_streamlit_components as stx
 import platform
 import pandas as pd
 import numpy as np
@@ -19,6 +18,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email import encoders
+import sys
+sys.path.insert(1, "module/")
+import extra as stx
 
 
 
@@ -48,6 +50,8 @@ if ('logout' not in st.session_state):
     st.session_state['logout'] = False
 if ('header' not in st.session_state):
     st.session_state['header'] = True
+if ('index' not in st.session_state):
+    st.session_state['index'] = 1
 
 
 
@@ -197,6 +201,60 @@ def google_sheet_credentials():
 
 
 
+### Function: send_mail = Email sending
+def send_mail(subject, body, receiver, attachment = None):
+    ## Creating the SMTP server object by giving SMPT server address and port number
+    smtp_server = smtplib.SMTP(st.secrets['mail']['smtp_server'], st.secrets['mail']['smtp_server_port'])
+
+    # setting the ESMTP protocol
+    smtp_server.ehlo()
+
+    # Setting up to TLS connection
+    smtp_server.starttls()
+
+    # Calling the ehlo() again as encryption happens on calling startttls()
+    smtp_server.ehlo()
+
+    # Logging into out email id
+    smtp_server.login(st.secrets['mail']['user'], st.secrets['mail']['password'])
+
+
+    ## Message to be send
+    msg = MIMEMultipart()  # create a message
+
+    # Setup the parameters of the message
+    msg['From'] = st.secrets['mail']['user']
+    msg['To'] = receiver
+    msg['Cc'] = ''
+    msg['Subject'] = subject
+
+    # Setup text
+    msg.attach(MIMEText(body))
+
+    # Setup attachment
+    record = MIMEBase('application', 'octet-stream')
+    record.set_payload(attachment)
+    encoders.encode_base64(record)
+    record.add_header('Content-Disposition', 'attachment', filename = '')
+    msg.attach(record)
+
+
+    ## Sending the mail by specifying the from and to address and the message
+    try:
+        smtp_server.sendmail(st.secrets['mail']['user'], receiver, msg.as_string())
+
+        # Printing a message on sending the mail
+        print('Mail successfully sent to ' + receiver)
+        st.success(body = 'Email succesfully sent to ' + receiver, icon = "✅")
+
+        # Terminating the server
+        smtp_server.quit()
+    except Exception as e:
+        print("An exception occurred in function `send_mail` ", e)
+        st.error(body = 'No Mail sent!', icon = "🚨")
+
+
+
 
 #### Two versions of the page -> Landing page vs. Car Pool
 ### Logged in state (Car Fleet Management System)
@@ -218,17 +276,14 @@ if check_password():
     ## Check for Requests
     # Read worksheet first to add data
     try:
-        data = wks.get_as_df()
+        all_data = wks.get_as_df()
     except Exception as e:
         print('Exception in read of Google Sheet', e)
 
-    # Convert numpy in pandas dataframe
-    actual_data = []
-    data["ID"] = data.index + 1
-    data = pd.DataFrame(data = data,
-                        columns = ["ID", "Driver", "Phone", "Mail", "Departure", "Destination", "Date", "Time", "Time_End", "Seats", "Request"])
-    data = data.set_index('ID')
-    
+    # Set index
+    all_data["ID"] = all_data.index + 1
+    all_data = all_data.set_index('ID')
+
 
 
     ### Custom Tab with IDs
@@ -236,7 +291,7 @@ if check_password():
         stx.TabBarItemData(id = 1, title = "Hitchhiker", description = "can see open Trips"),
         stx.TabBarItemData(id = 2, title = "Driver", description = "can enter Trips"),
         stx.TabBarItemData(id = 3, title = "Requester", description = "can ask for a Trip"),
-    ], default = 1)
+    ], default = st.session_state['index'])
     with st.form("Car Pool", clear_on_submit = True):
         ## tab `Hitchhiker`
         if (f"{chosen_id}" == '1'):
@@ -244,10 +299,12 @@ if check_password():
             st.subheader('Look for a trip')
             
             # Search for trips in the future
-            for idx, row in data.iterrows():
+            actual_data = []
+            for idx, row in all_data.iterrows():
                 if datetime.strptime(row['Date'], '%d/%m/%Y') >= datetime.now() and row['Request'] == 'FALSE':
                     actual_data.append(row)
             request = ''
+            button = 'Request'
             st.dataframe(actual_data)
 
 
@@ -257,7 +314,7 @@ if check_password():
             st.subheader('Enter a Trip')
             name = st.text_input('Name')
             phone = st.text_input('Phone')
-            mail = st.text_input('Mail address')
+            mail = st.text_input('Mail')
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
@@ -265,6 +322,7 @@ if check_password():
             time_end = st.time_input('Approx. Arrival', value = time(12, 45))
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'FALSE'
+            button = 'Enter'
 
 
         ## tab `Requester`
@@ -282,18 +340,23 @@ if check_password():
             time_end = time[1]
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
+            button = 'Ask'
 
         
         ## Submit button
-        submitted = st.form_submit_button('Submit')
+        submitted = st.form_submit_button(button)
         if submitted:
             if request != '':
+                # Read worksheet first to add data
+                try:
+                    data = wks.get_as_df()
+                except Exception as e:
+                    print('Exception in read of Google Sheet', e)
+                    
                 # Creating numpy array
                 data = np.array(data)
         
                 # Add data to existing
-                st.experimental_show(time_start)
-                st.experimental_show(time_end)
                 newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, request])
                 data = np.vstack((data, newrow))
         
@@ -307,7 +370,10 @@ if check_password():
                     print('Updated Google Sheet')
                 except Exception as e:
                     print('No Update to Google Sheet', e)
-                
+            else:
+                st.session_state['index'] = 3
+                st.experimental_rerun()
+            
             
             
             
