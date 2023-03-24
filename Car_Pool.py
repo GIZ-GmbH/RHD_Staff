@@ -261,8 +261,8 @@ if check_password():
             dep = st.text_input('Departure')
             des = st.text_input('Destination')
             date = st.date_input('Date')
-            time_start = st.time_input('Start Time')
-            time_end = st.time_input('Approx. Arrival')
+            time_start = str(st.time_input('Start Time'))
+            time_end = str(st.time_input('Approx. Arrival'))
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'FALSE'
 
