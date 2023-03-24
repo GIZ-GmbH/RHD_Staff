@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.streamlit/config.toml
+.streamlit/secrets.toml
 images/car.svg
 images/placeholder_car.png
 .idea/**/.gitignore
@@ -18,6 +20,7 @@ images/placeholder_car.png
 .idea/**/libraries
 .idea/**/dataSources
 .idea/**/dataSources.ids
+.idea/**/*
 
 # C extensions
 *.so
@@ -142,3 +145,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/module/extra/TabBar/frontend/build/precache-manifest.878595376cc5c94b9f20d6ee930421c9.js
+/module/extra/TabBar/frontend/build/precache-manifest.49dee8d1496ab92151578e914f88579a.js
