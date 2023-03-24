@@ -21,6 +21,12 @@ images/placeholder_car.png
 .idea/**/dataSources
 .idea/**/dataSources.ids
 .idea/**/*
+.idea/**/ChatGPTCopilotChannelManager.xml
+.idea/**/icon.svg
+.idea/**/profiles_settings.xml
+.idea/**/Project_Default.xml
+.idea/**/vcs.xml
+.idea/**/🚗 Car_Pool.iml
 
 # C extensions
 *.so
