@@ -245,11 +245,11 @@ def send_mail(subject, body, receiver, attachment = None):
     msg.attach(MIMEText(body))
 
     # Setup attachment
-    record = MIMEBase('application', 'octet-stream')
-    record.set_payload(attachment)
-    encoders.encode_base64(record)
-    record.add_header('Content-Disposition', 'attachment', filename = '')
-    msg.attach(record)
+    #record = MIMEBase('application', 'octet-stream')
+    #record.set_payload(attachment)
+    #encoders.encode_base64(record)
+    #record.add_header('Content-Disposition', 'attachment', filename = '')
+    #msg.attach(record)
 
 
     ## Sending the mail by specifying the from and to address and the message
@@ -258,13 +258,13 @@ def send_mail(subject, body, receiver, attachment = None):
 
         # Printing a message on sending the mail
         print('Mail successfully sent to ' + receiver)
-        st.success(body = 'Email succesfully sent to ' + receiver, icon = "✅")
+        #st.success(body = 'Email succesfully sent to ' + receiver, icon = "✅")
 
         # Terminating the server
         smtp_server.quit()
     except Exception as e:
         print("An exception occurred in function `send_mail` ", e)
-        st.error(body = 'No Mail sent!', icon = "🚨")
+        #st.error(body = 'No Mail sent!', icon = "🚨")
 
 
 
@@ -284,6 +284,30 @@ if check_password():
     # Opening sheet
     sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
     wks = sh.sheet1
+    
+    
+    ## Send mail to Requester
+    try:
+        read_sheet.clear()
+    except:
+        print('No clearance of the cache')
+    data_requester = read_sheet()
+    data_check = []
+    for idx, row in data_requester.iterrows():
+        if row['Request'] == 'TRUE':
+            data_check.append(row)
+    data_check = pd.DataFrame(data_check)
+    data_trips = []
+    for  idx, row in data_requester.iterrows():
+        if row['Request'] == 'FALSE':
+            data_trips.append(row)
+    data_trips = pd.DataFrame(data_trips)
+    for idx, row in data_trips.iterrows():
+        for idy, row_check in data_check.iterrows():
+            if row['Date'] == row_check['Date']:
+                if datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= date.today():
+                    info = row[['Mail', 'Departure', 'Start', 'Destination', 'Arrival', 'Seats']].to_string()
+                    send_mail(subject = 'Trip available', body = 'Dear ' + row_check['Driver'] + ',\n\na trip is available on ' + row['Date'] + ' from ' + row['Driver'] + ' - call on ' + row['Phone'] + '.\n\nInformation:\n' + info + '\n\nBest regards\n\nGIZ Car Pooling Service', receiver = row_check['Mail'], attachment = None)
 
 
 
@@ -305,7 +329,7 @@ if check_password():
             range_date = st.slider('Search a trip on these dates', value = (date.today(), date.today() + timedelta(days = 30)), min_value = date.today(),
                                    max_value = date.today() + timedelta(days = 150))
 
-            # Read worksheet first to add data
+            # Read worksheet
             all_data = read_sheet()
 
             # Set index
