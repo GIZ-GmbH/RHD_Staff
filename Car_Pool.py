@@ -281,7 +281,7 @@ if check_password():
             time = str(time[0])
             time_end = str(time[1])
             st.experimental_show(time_end)
-            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1
+            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
             # Read worksheet first to add data
             try:
