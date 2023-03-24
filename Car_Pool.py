@@ -263,8 +263,6 @@ if check_password():
             date = st.date_input('Date')
             time_start = st.time_input('Start Time', value = time(11, 30))
             time_end = st.time_input('Approx. Arrival', value = time(12, 45))
-            st.experimental_show(time_start)
-            st.experimental_show(time_end)
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'FALSE'
 
@@ -294,6 +292,8 @@ if check_password():
                 data = np.array(data)
         
                 # Add data to existing
+                st.experimental_show(time_start)
+                st.experimental_show(time_end)
                 newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, request])
                 data = np.vstack((data, newrow))
         
