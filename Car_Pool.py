@@ -280,8 +280,6 @@ if check_password():
             time = st.slider('Departure Time (range)', value = (time(11, 30), time(12, 45)))
             time_start = str(time[0])
             time_end = str(time[1])
-            st.experimental_show(time)
-            st.experimental_show(time_end)
             seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
             request = 'TRUE'
             # Read worksheet first to add data
