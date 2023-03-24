@@ -2,6 +2,22 @@
 __pycache__/
 *.py[cod]
 *$py.class
+images/car.svg
+images/placeholder_car.png
+.idea/**/.gitignore
+.idea/**/.name
+.idea/**/encodings.xml
+.idea/**/misc.xml
+.idea/**/modules.xml
+.idea/**/vcs.xml
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/inspectionProfiles
+.idea/**/libraries
+.idea/**/dataSources
+.idea/**/dataSources.ids
 
 # C extensions
 *.so
