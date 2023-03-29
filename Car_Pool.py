@@ -326,8 +326,12 @@ if check_password():
             st.subheader('Look for a trip')
     
             # Set range of date with st.slider
-            range_date = st.slider('Search a trip on these dates', value = (date.today(), date.today() + timedelta(days = 30)), min_value = date.today(),
-                                   max_value = date.today() + timedelta(days = 150))
+            #range_date = st.slider('Search a trip on these dates', value = (date.today(), date.today() + timedelta(days = 30)), min_value = date.today(), max_value = date.today() + timedelta(days = 150))
+            range_date = []
+            date_start = st.date_input('Range start')
+            range_date.append(date_start)
+            date_end = st.date_input('Range end')
+            range_date.append(date_end)
 
             # Read worksheet
             all_data = read_sheet()
