@@ -30,8 +30,8 @@ import extra as stx
 #### Streamlit initial setup
 try:
     st.set_page_config(
-        page_title = "GIZ MW Car Pool",
-        page_icon = st.secrets['custom']['car_pool_image_thumbnail'],
+        page_title = "RHD Staff Management",
+        page_icon = st.secrets['custom']['rhd_image_thumbnail'],
         layout = "centered",
         initial_sidebar_state = "expanded",
         menu_items = {
