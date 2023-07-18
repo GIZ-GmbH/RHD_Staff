@@ -1,16 +1,10 @@
-Car_Pool is a Python-based open-source carpool management system. Users can add, modify and view carpool requests, as well as keep track of the available vehicles, passengers, and drivers.
+RHD Staff is a Python-based open-source staff management system. Users can add, modify and view the location of the officiers on duty.
 
 ## How to use it?
-Users can access Car_Pool through a Streamlit-based web application with a user-friendly interface. Simply run `Car_Pool.py` in your Python environment to launch the application.
-
-Upon opening the application, users will be prompted to enter a username and password to access the Car_Pool management system. Once authenticated, users can view the dashboard and access various features related to carpool management.
+Users can login an schedule the next two weeks of their work.
 
 ## Features
-- Add, modify and view carpool requests
-- Keep track of available vehicles, passengers and drivers
-- Generate and send carpool reports via email
-- User authentication and session management
-- Admin-only features (e.g. managing users, vehicles, and drivers)
+- Add, modify and view officers location like office, field, on leave, sick leave and out of the country
 
 ## Dependencies
 - streamlit
@@ -21,7 +15,7 @@ Upon opening the application, users will be prompted to enter a username and pas
 - smtplib
 
 ## Getting Involved
-If you wish to contribute or report any issues, please feel free to visit the official GitHub repository of **Car_Pool** at https://github.com/DrBenjamin/Car_Pool.
+If you wish to contribute or report any issues, please feel free to visit the official GitHub repository of **Car_Pool** at [https://github.com/DrBenjamin/RHD_Staff](https://github.com/GIZ-GmbH/RHD_Staff)(https://github.com/GIZ-GmbH/RHD_Staff).
 
 ## Contact
 [ben@benbox.org](ben@benbox.org)
