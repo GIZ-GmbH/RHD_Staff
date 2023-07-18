@@ -1,6 +1,6 @@
-##### `Car_Pool.py`
-##### Car Pool
-##### Open-Source, hosted on https://github.com/DrBenjamin/Car_Pool
+##### `RHD_Staff.py`
+##### RHD Staff
+##### Open-Source, hosted on https://github.com/GIZ-GmbH/RHD_Staff
 ##### Please reach out to ben@benbox.org for any questions
 #### Loading needed Python libraries
 import streamlit as st

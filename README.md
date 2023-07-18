@@ -15,7 +15,7 @@ Users can login an schedule the next two weeks of their work.
 - smtplib
 
 ## Getting Involved
-If you wish to contribute or report any issues, please feel free to visit the official GitHub repository of **Car_Pool** at [https://github.com/DrBenjamin/RHD_Staff](https://github.com/GIZ-GmbH/RHD_Staff)(https://github.com/GIZ-GmbH/RHD_Staff).
+If you wish to contribute or report any issues, please feel free to visit the official GitHub repository of **Car_Pool** at [https://github.com/GIZ-GmbH/RHD_Staff](https://github.com/GIZ-GmbH/RHD_Staff).
 
 ## Contact
 [ben@benbox.org](ben@benbox.org)
