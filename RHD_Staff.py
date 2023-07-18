@@ -35,7 +35,7 @@ try:
         layout = "centered",
         initial_sidebar_state = "expanded",
         menu_items = {
-            'About': '**Car Pool**'
+            'About': '**RHD Staff Management**'
         }
     )
 except Exception as e:
