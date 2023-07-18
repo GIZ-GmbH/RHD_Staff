@@ -273,8 +273,8 @@ def send_mail(subject, body, receiver, attachment = None):
 ### Logged in state (Car Fleet Management System)
 if check_password():
     ## Header
-    header(title = 'Car Pool', data_desc = 'available trips', expanded = st.session_state['header'])
-    st.title('Car Pool')
+    header(title = 'RHD Staff Managment', data_desc = 'officers location', expanded = st.session_state['header'])
+    st.title('RHD Staff Managment')
 
 
     ## Open the spreadsheet and the first sheet
