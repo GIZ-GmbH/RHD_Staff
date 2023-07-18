@@ -58,7 +58,7 @@ if ('index' not in st.session_state):
 
 
 
-#### All functions used exclusively in Car Fleet Management
+#### All functions used exclusively in RHD Staff Management
 ### Function: check_password = Password / user checking
 def check_password():
     # Session states
