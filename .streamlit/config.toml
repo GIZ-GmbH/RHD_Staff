@@ -1,0 +1,58 @@
+##### `.streamlit/secrets.toml`
+##### RHD Staff Management
+##### Open-Source, hosted on https://github.com/SeriousBenEntertainment/RHD_Staff
+##### Please reach out to ben@benbox.org for any questions
+#### Set puplic configuration
+### Theme configuration
+[theme]
+primaryColor = "#F63366"
+backgroundColor = "#ff7dad"
+secondaryBackgroundColor = "cf2a67"
+textColor = "#262730"
+font = "sans serif"
+
+
+
+### Browser configuration
+[browser]
+# Server address binding
+#serverAddress = "localhost"
+serverPort = 8501
+gatherUsageStats = false
+
+
+
+### Server configuration
+[server]
+headless = true
+#address = "192.168.1.126"
+port = 8501
+baseUrlPath = ""
+
+# Max size, in megabytes, for files uploaded with the file_uploader
+maxUploadSize = 200
+
+# Max size, in megabytes, of messages that can be sent via the WebSocket connection
+maxMessageSize = 200
+
+# Enables support for websocket compression
+enableWebsocketCompression = true
+
+# Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
+sslCertFile = "/Users/gross_ben/Documents/ssl/host.cert"
+
+# Cryptographic key file for connecting via HTTPS. Must be set at the same time as "server.sslCertFile"
+sslKeyFile = "/Users/gross_ben/Documents/ssl/host.key"
+
+
+
+### Runner
+[runner]
+# Handle script rerun requests immediately, rather than waiting for script execution to reach a yield point. This makes Streamlit much more responsive to user interaction, but it can lead to race conditions in apps that mutate session_state data outside of explicit session_state assignment statements.
+fastReruns = true
+
+
+
+### Custom Mapbox token for elements like st.pydeck_chart and st.map
+[mapbox]
+token = "pk.eyJ1IjoiZHJkcmJlbmphbWluIiwiYSI6ImNsZjIxZ2c0bzBlMHMzcnA4ZTNqNXVveGQifQ.MHxDdtgEULvvA3FW-26rsQ"

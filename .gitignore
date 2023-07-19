@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.streamlit/config.toml
 .streamlit/secrets.toml
 images/car.svg
 images/placeholder_car.png
