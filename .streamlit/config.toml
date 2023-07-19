@@ -39,10 +39,10 @@ maxMessageSize = 200
 enableWebsocketCompression = true
 
 # Server certificate file for connecting via HTTPS. Must be set at the same time as "server.sslKeyFile"
-sslCertFile = "/Users/gross_ben/Documents/ssl/host.cert"
+#sslCertFile = "/Users/gross_ben/Documents/ssl/host.cert"
 
 # Cryptographic key file for connecting via HTTPS. Must be set at the same time as "server.sslCertFile"
-sslKeyFile = "/Users/gross_ben/Documents/ssl/host.key"
+#sslKeyFile = "/Users/gross_ben/Documents/ssl/host.key"
 
 
 
