@@ -335,6 +335,7 @@ if check_password():
                 duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
             elif duty_loc == 'other':
                 duty_place = st.text_input('Comment')
+            st.button('Commit')
 
             # Read worksheet
             all_data = read_sheet()

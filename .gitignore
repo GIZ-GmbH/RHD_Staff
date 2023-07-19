@@ -153,3 +153,4 @@ dmypy.json
 /module/extra/TabBar/frontend/build/precache-manifest.878595376cc5c94b9f20d6ee930421c9.js
 /module/extra/TabBar/frontend/build/precache-manifest.49dee8d1496ab92151578e914f88579a.js
 .vscode/extensions.json
+.streamlit/config.toml
