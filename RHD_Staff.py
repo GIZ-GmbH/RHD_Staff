@@ -322,7 +322,7 @@ if check_password():
     ## tab `Hitchhiker`
     if (f"{chosen_id}" == '1'):
         with st.expander('', expanded = True):
-            st.title('Hitchhiker')
+            st.title('Enter availibilty')
             st.subheader('Look for a trip')
     
             # Set range of date with st.slider

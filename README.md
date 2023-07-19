@@ -24,5 +24,5 @@ If you wish to contribute or report any issues, please feel free to visit the of
 [![Open in Streamlit Cloud][share_badge]][share_link]
 
 [share_badge]: https://static.streamlit.io/badges/streamlit_badge_black_white.svg
-[share_link]: https://rhd-staff.streamlit.app
+[share_link]: https://rhdstaff.streamlit.app
 
