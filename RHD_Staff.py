@@ -189,12 +189,12 @@ def google_sheet_credentials():
     ## Google Sheet API authorization
     output = st.secrets['google']['credentials_file']
     GoogleDriveDownloader.download_file_from_google_drive(file_id = st.secrets['google']['credentials_file_id'],
-                                                          dest_path = './credentials.zip', unzip = True)
+                                                          dest_path = './rhd_credentials.zip', unzip = True)
     client = pygsheets.authorize(service_file = st.secrets['google']['credentials_file'])
-    if os.path.exists("credentials.zip"):
-        os.remove("credentials.zip")
-    if os.path.exists("google_credentials.json"):
-        os.remove("google_credentials.json")
+    if os.path.exists("rhd_credentials.zip"):
+        os.remove("rhd_credentials.zip")
+    if os.path.exists("rhd_credentials.json"):
+        os.remove("rhd_credentials.json")
     if os.path.exists("__MACOSX"):
         shutil.rmtree("__MACOSX")
 
@@ -313,25 +313,28 @@ if check_password():
 
     ### Custom Tab with IDs
     chosen_id = stx.tab_bar(data = [
-        stx.TabBarItemData(id = 1, title = "Hitchhiker", description = "can see open Trips"),
-        stx.TabBarItemData(id = 2, title = "Driver", description = "can enter Trips"),
-        stx.TabBarItemData(id = 3, title = "Requester", description = "can ask for a Trip"),
+        stx.TabBarItemData(id = 1, title = "Officers", description = "enter location of duty"),
+        stx.TabBarItemData(id = 2, title = "Calendar", description = "view officers in a calendar view"),
+        stx.TabBarItemData(id = 3, title = "Map", description = "view officers on a map"),
     ], default = st.session_state['index'])
     
     
-    ## tab `Hitchhiker`
+    ## tab `Officers`
     if (f"{chosen_id}" == '1'):
         with st.expander('', expanded = True):
-            st.title('Enter availibilty')
-            st.subheader('Look for a trip')
-    
-            # Set range of date with st.slider
-            #range_date = st.slider('Search a trip on these dates', value = (date.today(), date.today() + timedelta(days = 30)), min_value = date.today(), max_value = date.today() + timedelta(days = 150))
+            st.title('Location of duty')
+            st.subheader('Enter your location data')
+            officer = st.selectbox('Officer', options = ['Benjamin', 'Chikondi', 'Chimwemwe', 'Chisomo', 'Davie', 'Dorothy', 'Esnart', 'Felix', 'Fiskani', 'Gloria', 'Grace', 'Humphrey', 'Ishmael', 'James', 'John', 'Joseph', 'Kondwani', 'Linda', 'Lloyd', 'Loveness', 'Maggie', 'Makina', 'Makweti', 'Mavuto', 'Moses', 'Mphatso', 'Nancy', 'Nelson', 'Nester', 'Nora', 'Paul', 'Peter', 'Rabecca', 'Raphael', 'Ruth', 'Samuel', 'Sangwani', 'Saulos', 'Shadreck', 'Sharon', 'Stella', 'Steven', 'Tapiwa', 'Thokozani', 'Tionge', 'Tiyamike', 'Trevor', 'Victor', 'Winston', 'Yamikani', 'Yohane', 'Zione'])
             range_date = []
-            date_start = st.date_input('Range start')
+            date_start = st.date_input('Starting day')
             range_date.append(date_start)
-            date_end = st.date_input('Range end')
+            date_end = st.date_input('Ending day')
             range_date.append(date_end)
+            duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
+            if duty_loc == 'in the field':
+                duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
+            elif duty_loc == 'other':
+                duty_place = st.text_input('Comment')
 
             # Read worksheet
             all_data = read_sheet()
@@ -347,15 +350,17 @@ if check_password():
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
             try:
-                st.dataframe(actual_data[['Driver', 'Phone', 'Mail', 'Departure', 'Destination', 'Date', 'Start', 'Arrival', 'Seats']].head(10))
+                print('Not yet implemented')
+                #st.dataframe(actual_data[['Driver', 'Phone', 'Mail', 'Departure', 'Destination', 'Date', 'Start', 'Arrival', 'Seats']].head(10))
             except:
-                st.warning(body = 'No Trips in this range!', icon = "🚨")
+                #st.warning(body = 'No Trips in this range!', icon = "🚨")
+                print('Not yet implemented')
 
-    ## tab `Driver`
+    ## tab `Calendar`
     elif (f"{chosen_id}" == '2'):
-        with st.form("Car Pool Driver", clear_on_submit = True):
-            st.title('Drivers')
-            st.subheader('Enter a Trip')
+        with st.form("Calendar", clear_on_submit = True):
+            st.title('Calendar')
+            st.subheader('Officers location by date')
             name = st.text_input('Name')
             phone = st.text_input('Phone')
             mail = st.text_input('Mail')
@@ -393,11 +398,11 @@ if check_password():
                     print('No Update to Google Sheet', e)
 
 
-    ## tab `Requester`
+    ## tab `Map`
     elif (f"{chosen_id}" == '3'):
-        with st.form("Car Pool Requester", clear_on_submit = True):
-            st.title('Request')
-            st.subheader('Ask for a Trip')
+        with st.form("Map", clear_on_submit = True):
+            st.title('Map')
+            st.subheader('Officers location on the mapS')
             name = st.text_input('Name')
             phone = st.text_input('Phone')
             mail = st.text_input('Mail')
