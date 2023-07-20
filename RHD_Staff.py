@@ -12,11 +12,7 @@ from google_drive_downloader import GoogleDriveDownloader
 import pygsheets
 import shutil
 from calendar import month_abbr
-from datetime import datetime
-from datetime import datetime
-from datetime import date
-from datetime import time
-from datetime import timedelta
+from datetime import datetime, date, time, timedelta
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -293,23 +289,25 @@ if check_password():
         read_sheet.clear()
     except:
         print('No clearance of the cache')
+    
     data_requester = read_sheet()
+
     data_check = []
     for idx, row in data_requester.iterrows():
-        if row['Request'] == 'TRUE':
-            data_check.append(row)
+        data_check.append(row)
     data_check = pd.DataFrame(data_check)
+    
     data_trips = []
     for  idx, row in data_requester.iterrows():
-        if row['Request'] == 'FALSE':
-            data_trips.append(row)
+        data_trips.append(row)
     data_trips = pd.DataFrame(data_trips)
-    for idx, row in data_trips.iterrows():
-        for idy, row_check in data_check.iterrows():
-            if row['Date'] == row_check['Date']:
-                if datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= date.today():
-                    info = row[['Mail', 'Departure', 'Start', 'Destination', 'Arrival', 'Seats']].to_string()
-                    send_mail(subject = 'Trip available', body = 'Dear ' + row_check['Driver'] + ',\n\na trip is available on ' + row['Date'] + ' from ' + row['Driver'] + ' - call on ' + row['Phone'] + '.\n\nInformation:\n' + info + '\n\nBest regards\n\nGIZ Car Pooling Service', receiver = row_check['Mail'], attachment = None)
+
+    #for idx, row in data_trips.iterrows():
+    #    for idy, row_check in data_check.iterrows():
+    #        if row['Date'] == row_check['Date']:
+    #            if datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= date.today():
+    #                info = row[['Mail', 'Departure', 'Start', 'Destination', 'Arrival', 'Seats']].to_string()
+    #                send_mail(subject = 'Trip available', body = 'Dear ' + row_check['Driver'] + ',\n\na trip is available on ' + row['Date'] + ' from ' + row['Driver'] + ' - call on ' + row['Phone'] + '.\n\nInformation:\n' + info + '\n\nBest regards\n\nGIZ Car Pooling Service', receiver = row_check['Mail'], attachment = None)
 
 
 
@@ -323,21 +321,86 @@ if check_password():
     
     ## tab `Officers`
     if (f"{chosen_id}" == '1'):
-        with st.expander('', expanded = True):
+        with st.expander('Officers', expanded = True):
             st.title('Location of duty')
             st.subheader('Enter your location data')
-            officer = st.selectbox('Officer', options = ['Benjamin', 'Chikondi', 'Chimwemwe', 'Chisomo', 'Davie', 'Dorothy', 'Esnart', 'Felix', 'Fiskani', 'Gloria', 'Grace', 'Humphrey', 'Ishmael', 'James', 'John', 'Joseph', 'Kondwani', 'Linda', 'Lloyd', 'Loveness', 'Maggie', 'Makina', 'Makweti', 'Mavuto', 'Moses', 'Mphatso', 'Nancy', 'Nelson', 'Nester', 'Nora', 'Paul', 'Peter', 'Rabecca', 'Raphael', 'Ruth', 'Samuel', 'Sangwani', 'Saulos', 'Shadreck', 'Sharon', 'Stella', 'Steven', 'Tapiwa', 'Thokozani', 'Tionge', 'Tiyamike', 'Trevor', 'Victor', 'Winston', 'Yamikani', 'Yohane', 'Zione'])
+            name = st.selectbox('Officer', options = ['Benjamin', 'Chikondi', 'Chimwemwe', 'Chisomo', 'Davie', 'Dorothy', 'Esnart', 'Felix', 'Fiskani', 'Gloria', 'Grace', 'Humphrey', 'Ishmael', 'James', 'John', 'Joseph', 'Kondwani', 'Linda', 'Lloyd', 'Loveness', 'Maggie', 'Makina', 'Makweti', 'Mavuto', 'Moses', 'Mphatso', 'Nancy', 'Nelson', 'Nester', 'Nora', 'Paul', 'Peter', 'Rabecca', 'Raphael', 'Ruth', 'Samuel', 'Sangwani', 'Saulos', 'Shadreck', 'Sharon', 'Stella', 'Steven', 'Tapiwa', 'Thokozani', 'Tionge', 'Tiyamike', 'Trevor', 'Victor', 'Winston', 'Yamikani', 'Yohane', 'Zione'])
+            phone = st.text_input('Phone')
+            mail = st.text_input('Mail')
+            duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
+            
+            duty_place = ''
+            if duty_loc == 'in the field':
+                duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
+            
+            duty_comment = ''
+            if duty_loc == 'other':
+                duty_comment = st.text_input('Comment')
             range_date = []
             date_start = st.date_input('Starting day')
             range_date.append(date_start)
             date_end = st.date_input('Ending day')
             range_date.append(date_end)
-            duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
-            if duty_loc == 'in the field':
-                duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
-            elif duty_loc == 'other':
-                duty_place = st.text_input('Comment')
-            st.button('Commit')
+
+            # Submit button
+            submitted = st.button('Submit')
+            if submitted:
+                # Read worksheet first to add data
+                data = read_sheet()
+                    
+                # Creating numpy array
+                data = np.array(data)
+            
+                # Add data to existing
+                newrow = np.array([name, phone, mail, duty_loc, duty_place, duty_comment, str(date_start), str(date_end)])
+                data = np.vstack((data, newrow))
+            
+                # Converting numby array to list
+                data = data.tolist()
+            
+                # Writing to worksheet
+                try:
+                    wks.update_values(crange = 'A2', values = data)
+                    st.session_state['google'] = True
+                    print('Updated Google Sheet')
+                    read_sheet.clear()
+                except Exception as e:
+                    print('No Update to Google Sheet', e)
+
+
+    ## tab `Calendar`
+    elif (f"{chosen_id}" == '2'):
+        with st.expander("Calendar", expanded = True):
+            st.title('Calendar')
+            st.subheader('Officers location by date')
+            
+            # Read worksheet
+            all_data = read_sheet()
+
+            # Set index
+            all_data["ID"] = all_data.index + 1
+            all_data = all_data.set_index('ID')
+            
+            # Search for trips in the future
+            actual_data = []
+
+            # datetime date of today
+            range_date = [date.today(), date.today() + timedelta(days = 7)]
+            for idx, row in all_data.iterrows():
+                if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
+                    actual_data.append(row)
+            actual_data = pd.DataFrame(actual_data)
+            try:
+                st.dataframe(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']].head(10))
+            except:
+                st.warning(body = 'No Trips in this range!', icon = "🚨")
+
+
+    ## tab `Map`
+    elif (f"{chosen_id}" == '3'):
+        with st.expander("Map", expanded = True):
+            st.title('Map')
+            st.subheader('Officers location on the map')
 
             # Read worksheet
             all_data = read_sheet()
@@ -348,112 +411,36 @@ if check_password():
             
             # Search for trips in the future
             actual_data = []
+            
+            # datetime date of today
+            range_date = [date.today(), date.today() + timedelta(days = 7)]
             for idx, row in all_data.iterrows():
-                if (datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) <= range_date[1]) and row['Request'] == 'FALSE':
+                if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
+            places = all_data['Place'].unique()
+            df = pd.DataFrame([[-13.9550205, 33.7101647]], columns = ['lat', 'lon'])
+            for place in places:
+                print(place)
+                if place == 'Blantyre':
+                    loc = [-15.7760278, 34.9483648]
+                    df.loc[len(df.index)] = loc
+                elif place == 'Salima':
+                    loc = [-13.7790881, 34.4442415]
+                    df.loc[len(df.index)] = loc
+                elif place == 'Mzuzu':
+                    loc = [-11.4313957, 33.9744892]
+                    df.loc[len(df.index)] = loc
+                elif place == 'Zomba':
+                    loc = [-15.3927981, 35.3023974]
+                    df.loc[len(df.index)] = loc
             try:
-                print('Not yet implemented')
-                #st.dataframe(actual_data[['Driver', 'Phone', 'Mail', 'Departure', 'Destination', 'Date', 'Start', 'Arrival', 'Seats']].head(10))
+                # Map
+                st.map(df)
             except:
-                #st.warning(body = 'No Trips in this range!', icon = "🚨")
-                print('Not yet implemented')
-
-    ## tab `Calendar`
-    elif (f"{chosen_id}" == '2'):
-        with st.form("Calendar", clear_on_submit = True):
-            st.title('Calendar')
-            st.subheader('Officers location by date')
-
-            with st.expander('Report month'):
-                this_year = datetime.now().year
-                this_month = datetime.now().month
-                report_year = st.selectbox("", range(this_year, this_year - 2, -1))
-                month_abbr = month_abbr[1:]
-                report_month_str = st.radio("", month_abbr, index=this_month - 1, horizontal=True)
-                report_month = month_abbr.index(report_month_str) + 1
-
-                # Result
-                st.text(f'{report_year} {report_month_str}')
-
-            name = st.text_input('Name')
-            phone = st.text_input('Phone')
-            mail = st.text_input('Mail')
-            dep = st.text_input('Departure')
-            des = st.text_input('Destination')
-            date = st.date_input('Date')
-            time_start = st.time_input('Start Time', value = time(11, 30))
-            time_end = st.time_input('Approx. Arrival', value = time(12, 45))
-            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
-            
-            
-            ## Submit button
-            submitted = st.form_submit_button('Submit')
-            if submitted:
-                # Read worksheet first to add data
-                data = read_sheet()
-        
-                # Creating numpy array
-                data = np.array(data)
-        
-                # Add data to existing
-                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, 'FALSE'])
-                data = np.vstack((data, newrow))
-        
-                # Converting numby array to list
-                data = data.tolist()
-        
-                # Writing to worksheet
-                try:
-                    wks.update_values(crange = 'A2', values = data)
-                    st.session_state['google'] = True
-                    print('Updated Google Sheet')
-                    read_sheet.clear()
-                except Exception as e:
-                    print('No Update to Google Sheet', e)
+                st.warning(body = 'No Officer in this range!', icon = "🚨")
 
 
-    ## tab `Map`
-    elif (f"{chosen_id}" == '3'):
-        with st.form("Map", clear_on_submit = True):
-            st.title('Map')
-            st.subheader('Officers location on the mapS')
-            name = st.text_input('Name')
-            phone = st.text_input('Phone')
-            mail = st.text_input('Mail')
-            dep = st.text_input('Departure')
-            des = st.text_input('Destination')
-            date = st.date_input('Date')
-            time = st.slider('Arrival time (range)', value = (time(11, 30), time(12, 45)))
-            time_start = time[0]
-            time_end = time[1]
-            seats = st.number_input('Seats', min_value = 1, max_value = 6, value = 1)
-
-        
-            ## Submit button
-            submitted = st.form_submit_button('Ask')
-            if submitted:
-                # Read worksheet first to add data
-                data = read_sheet()
-                    
-                # Creating numpy array
-                data = np.array(data)
-            
-                # Add data to existing
-                newrow = np.array([name, phone, mail, dep, des, str(date), str(time_start), str(time_end), seats, 'TRUE'])
-                data = np.vstack((data, newrow))
-            
-                # Converting numby array to list
-                data = data.tolist()
-            
-                # Writing to worksheet
-                try:
-                    wks.update_values(crange = 'A2', values = data)
-                    st.session_state['google'] = True
-                    print('Updated Google Sheet')
-                    read_sheet.clear()
-                except Exception as e:
-                    print('No Update to Google Sheet', e)
                 
             
             
@@ -462,6 +449,6 @@ if check_password():
     
 ### Not Logged in state (Landing page)
 else:
-    landing_page(' GIZ MW Car Pool')
+    landing_page(' RHD Staff Management')
 
 
