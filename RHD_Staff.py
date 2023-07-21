@@ -281,6 +281,7 @@ if check_password():
             
                 # Writing to worksheet
                 try:
+                    wks = sh[0]
                     wks.update_values(crange = 'A2', values = data)
                     st.session_state['google'] = True
                     print('Updated Google Sheet')
