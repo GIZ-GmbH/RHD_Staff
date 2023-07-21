@@ -203,7 +203,8 @@ def google_sheet_credentials():
 
 ### Function read_sheet = Read data from Google Sheet
 @st.cache_data
-def read_sheet():
+def read_sheet(sheet = 0):
+    wks = sh[sheet]
     try:
         data = wks.get_as_df()
     except Exception as e:
@@ -212,63 +213,9 @@ def read_sheet():
 
 
 
-### Function: send_mail = Email sending
-def send_mail(subject, body, receiver, attachment = None):
-    ## Creating the SMTP server object by giving SMPT server address and port number
-    smtp_server = smtplib.SMTP(st.secrets['mail']['smtp_server'], st.secrets['mail']['smtp_server_port'])
-
-    # setting the ESMTP protocol
-    smtp_server.ehlo()
-
-    # Setting up to TLS connection
-    smtp_server.starttls()
-
-    # Calling the ehlo() again as encryption happens on calling startttls()
-    smtp_server.ehlo()
-
-    # Logging into out email id
-    smtp_server.login(st.secrets['mail']['user'], st.secrets['mail']['password'])
-
-
-    ## Message to be send
-    msg = MIMEMultipart()  # create a message
-
-    # Setup the parameters of the message
-    msg['From'] = st.secrets['mail']['user']
-    msg['To'] = receiver
-    msg['Cc'] = ''
-    msg['Subject'] = subject
-
-    # Setup text
-    msg.attach(MIMEText(body))
-
-    # Setup attachment
-    #record = MIMEBase('application', 'octet-stream')
-    #record.set_payload(attachment)
-    #encoders.encode_base64(record)
-    #record.add_header('Content-Disposition', 'attachment', filename = '')
-    #msg.attach(record)
-
-
-    ## Sending the mail by specifying the from and to address and the message
-    try:
-        smtp_server.sendmail(st.secrets['mail']['user'], receiver, msg.as_string())
-
-        # Printing a message on sending the mail
-        print('Mail successfully sent to ' + receiver)
-        #st.success(body = 'Email succesfully sent to ' + receiver, icon = "✅")
-
-        # Terminating the server
-        smtp_server.quit()
-    except Exception as e:
-        print("An exception occurred in function `send_mail` ", e)
-        #st.error(body = 'No Mail sent!', icon = "🚨")
-
-
-
 
 #### Two versions of the page -> Landing page vs. Car Pool
-### Logged in state (Car Fleet Management System)
+### Logged in state (RHD Staff Management)
 if check_password():
     ## Header
     header(title = 'RHD Staff Managment', data_desc = 'officers location', expanded = st.session_state['header'])
@@ -281,34 +228,7 @@ if check_password():
 
     # Opening sheet
     sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
-    wks = sh.sheet1
     
-    
-    ## Send mail to Requester
-    try:
-        read_sheet.clear()
-    except:
-        print('No clearance of the cache')
-    
-    data_requester = read_sheet()
-
-    data_check = []
-    for idx, row in data_requester.iterrows():
-        data_check.append(row)
-    data_check = pd.DataFrame(data_check)
-    
-    data_trips = []
-    for  idx, row in data_requester.iterrows():
-        data_trips.append(row)
-    data_trips = pd.DataFrame(data_trips)
-
-    #for idx, row in data_trips.iterrows():
-    #    for idy, row_check in data_check.iterrows():
-    #        if row['Date'] == row_check['Date']:
-    #            if datetime.date(datetime.strptime(row['Date'], '%d/%m/%Y')) >= date.today():
-    #                info = row[['Mail', 'Departure', 'Start', 'Destination', 'Arrival', 'Seats']].to_string()
-    #                send_mail(subject = 'Trip available', body = 'Dear ' + row_check['Driver'] + ',\n\na trip is available on ' + row['Date'] + ' from ' + row['Driver'] + ' - call on ' + row['Phone'] + '.\n\nInformation:\n' + info + '\n\nBest regards\n\nGIZ Car Pooling Service', receiver = row_check['Mail'], attachment = None)
-
 
 
     ### Custom Tab with IDs
@@ -324,9 +244,10 @@ if check_password():
         with st.expander('Officers', expanded = True):
             st.title('Location of duty')
             st.subheader('Enter your location data')
-            name = st.selectbox('Officer', options = ['Benjamin', 'Chikondi', 'Chimwemwe', 'Chisomo', 'Davie', 'Dorothy', 'Esnart', 'Felix', 'Fiskani', 'Gloria', 'Grace', 'Humphrey', 'Ishmael', 'James', 'John', 'Joseph', 'Kondwani', 'Linda', 'Lloyd', 'Loveness', 'Maggie', 'Makina', 'Makweti', 'Mavuto', 'Moses', 'Mphatso', 'Nancy', 'Nelson', 'Nester', 'Nora', 'Paul', 'Peter', 'Rabecca', 'Raphael', 'Ruth', 'Samuel', 'Sangwani', 'Saulos', 'Shadreck', 'Sharon', 'Stella', 'Steven', 'Tapiwa', 'Thokozani', 'Tionge', 'Tiyamike', 'Trevor', 'Victor', 'Winston', 'Yamikani', 'Yohane', 'Zione'])
-            phone = st.text_input('Phone')
-            mail = st.text_input('Mail')
+            officers = read_sheet(sheet = 1)
+            name = st.selectbox('Officer', options = officers['Officer'].unique())
+            phone = st.text_input('Phone', value = officers.loc[officers['Officer'] == name]['Phone'].values[0])
+            mail = st.text_input('Mail', value = officers.loc[officers['Officer'] == name]['Mail'].values[0])
             duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
             
             duty_place = ''
@@ -420,20 +341,13 @@ if check_password():
             actual_data = pd.DataFrame(actual_data)
             places = all_data['Place'].unique()
             df = pd.DataFrame([[-13.9550205, 33.7101647]], columns = ['lat', 'lon'])
+            places_cordinates = read_sheet(sheet = 2)
             for place in places:
-                print(place)
-                if place == 'Blantyre':
-                    loc = [-15.7760278, 34.9483648]
-                    df.loc[len(df.index)] = loc
-                elif place == 'Salima':
-                    loc = [-13.7790881, 34.4442415]
-                    df.loc[len(df.index)] = loc
-                elif place == 'Mzuzu':
-                    loc = [-11.4313957, 33.9744892]
-                    df.loc[len(df.index)] = loc
-                elif place == 'Zomba':
-                    loc = [-15.3927981, 35.3023974]
-                    df.loc[len(df.index)] = loc
+                for cordinate in places_cordinates['District']:
+                    if place == cordinate:
+                        lat = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lat.'].values)[1:-1]
+                        lon = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lon.'].values)[1:-1]
+                        df.loc[len(df.index)] = [float(lat), float(lon)]
             try:
                 # Map
                 st.map(df)
