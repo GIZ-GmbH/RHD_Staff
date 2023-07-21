@@ -250,7 +250,6 @@ if check_password():
             phone = phone.replace("+", "'+")
             mail = st.text_input('Mail', value = officers.loc[officers['Officer'] == name]['Mail'].values[0])
             duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
-            
             duty_place = ''
             if duty_loc == 'in the field':
                 duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
