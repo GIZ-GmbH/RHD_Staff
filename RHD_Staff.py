@@ -252,7 +252,8 @@ if check_password():
             duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
             duty_place = ''
             if duty_loc == 'in the field':
-                duty_place = st.selectbox('Place of duty', options = ['Salima', 'Blantyre', 'Lilongwe', 'Mzuzu', 'Zomba'])
+                places_r = read_sheet(sheet = 2)
+                duty_place = st.selectbox('Place of duty', options = places_r['District'].unique())
             
             duty_comment = ''
             if duty_loc == 'other':
