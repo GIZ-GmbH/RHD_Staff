@@ -247,6 +247,7 @@ if check_password():
             officers = read_sheet(sheet = 1)
             name = st.selectbox('Officer', options = officers['Officer'].unique())
             phone = st.text_input('Phone', value = officers.loc[officers['Officer'] == name]['Phone'].values[0])
+            phone = phone.replace("+", "'+")
             mail = st.text_input('Mail', value = officers.loc[officers['Officer'] == name]['Mail'].values[0])
             duty_loc = st.selectbox('Location of duty', options = ['RHD office Area 4', 'MoH office Capital Hill', 'home office', 'in the field', 'out of country', 'on leave', 'sick leave', 'other'])
             
@@ -284,8 +285,9 @@ if check_password():
                     wks = sh[0]
                     wks.update_values(crange = 'A2', values = data)
                     st.session_state['google'] = True
-                    print('Updated Google Sheet')
                     read_sheet.clear()
+                    print('Updated Google Sheet')
+                    st.experimental_rerun()
                 except Exception as e:
                     print('No Update to Google Sheet', e)
 
