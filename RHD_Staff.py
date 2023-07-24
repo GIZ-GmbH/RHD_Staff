@@ -287,7 +287,7 @@ if check_password():
                     st.session_state['google'] = True
                     read_sheet.clear()
                     print('Updated Google Sheet')
-                    st.experimental_rerun()
+                    st.info(body = 'Data successfully submitted!', icon = "✅")
                 except Exception as e:
                     print('No Update to Google Sheet', e)
 
@@ -309,7 +309,7 @@ if check_password():
             actual_data = []
 
             # datetime date of today
-            range_date = [date.today(), date.today() + timedelta(days = 7)]
+            range_date = [date.today(), date.today() + timedelta(days = 14)]
             for idx, row in all_data.iterrows():
                 if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
@@ -337,7 +337,7 @@ if check_password():
             actual_data = []
             
             # datetime date of today
-            range_date = [date.today(), date.today() + timedelta(days = 7)]
+            range_date = [date.today(), date.today() + timedelta(days = 14)]
             for idx, row in all_data.iterrows():
                 if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
