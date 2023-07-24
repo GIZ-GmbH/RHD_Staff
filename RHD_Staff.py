@@ -272,7 +272,10 @@ if check_password():
                     
                 # Creating numpy array
                 data = np.array(data)
-            
+                for d in data:
+                    if d[1][0:1] != "'+":
+                        d[1] = d[1].replace("+", "'+")
+
                 # Add data to existing
                 newrow = np.array([name, phone, mail, duty_loc, duty_place, duty_comment, str(date_start), str(date_end)])
                 data = np.vstack((data, newrow))
