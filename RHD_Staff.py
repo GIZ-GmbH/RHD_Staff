@@ -317,11 +317,12 @@ if check_password():
                 if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
-
+            st.write(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
+                     
             # Show data
             altered_data = []
             try:
-                altered_data = st.data_editor(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']].head(10))
+                altered_data = st.data_editor(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
             except:
                 st.warning(body = 'No Trips in this range!', icon = "🚨")
             
