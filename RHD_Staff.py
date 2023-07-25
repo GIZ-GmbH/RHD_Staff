@@ -318,9 +318,20 @@ if check_password():
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
             try:
-                st.dataframe(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']].head(10))
+                altered_data = st.data_editor(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']].head(10))
             except:
                 st.warning(body = 'No Trips in this range!', icon = "🚨")
+            
+            # Changes in dataframe
+            try:
+                if altered_data.compare(actual_data, align_axis = 1, keep_shape = False, keep_equal = False).empty:
+                    print('No changes')
+                else:
+                    print('Changes')
+                    print(altered_data.compare(actual_data, align_axis = 1, keep_shape = False, keep_equal = False))
+                    
+            except:
+                print('Error')
 
 
     ## tab `Map`
