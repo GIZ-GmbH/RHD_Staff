@@ -319,8 +319,7 @@ if check_password():
             actual_data = pd.DataFrame(actual_data)
                      
             # Show data
-            altered_data = []
-            altered_data = st.data_editor(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
+            st.dataframe(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
             
             # Changes in dataframe
             try:
