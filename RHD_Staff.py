@@ -317,6 +317,9 @@ if check_password():
                 if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
+
+            # Show data
+            altered_data = []
             try:
                 altered_data = st.data_editor(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']].head(10))
             except:
@@ -324,11 +327,11 @@ if check_password():
             
             # Changes in dataframe
             try:
-                if altered_data.compare(actual_data, align_axis = 1, keep_shape = False, keep_equal = False).empty:
+                if altered_data.equals(actual_data): # type: ignore
                     print('No changes')
                 else:
                     print('Changes')
-                    print(altered_data.compare(actual_data, align_axis = 1, keep_shape = False, keep_equal = False))
+                    print(altered_data.compare(actual_data, align_axis = 1, keep_shape = False, keep_equal = False)) # type: ignore
                     
             except:
                 print('Error')
