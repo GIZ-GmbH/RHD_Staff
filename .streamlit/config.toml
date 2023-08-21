@@ -17,7 +17,7 @@ font = "sans serif"
 [browser]
 # Server address binding
 #serverAddress = "localhost"
-serverPort = 8501
+serverPort = 8502
 gatherUsageStats = false
 
 
@@ -26,7 +26,7 @@ gatherUsageStats = false
 [server]
 headless = true
 #address = "192.168.1.126"
-port = 8501
+port = 8502
 baseUrlPath = ""
 
 # Max size, in megabytes, for files uploaded with the file_uploader

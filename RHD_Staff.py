@@ -228,6 +228,7 @@ if check_password():
 
     # Opening sheet
     sh = client.open_by_key(st.secrets['google']['spreadsheet_id'])
+    print('Opened Google Sheet: ', sh)
     
 
 
@@ -319,7 +320,10 @@ if check_password():
             actual_data = pd.DataFrame(actual_data)
                      
             # Show data
-            st.dataframe(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
+            try:
+                st.dataframe(actual_data[['Officer', 'Phone', 'Mail', 'Location', 'Place', 'Comment', 'Date from', 'Date to']])
+            except:
+                st.info('No current data', icon = "ℹ️")
 
 
     ## tab `Map`
@@ -357,7 +361,7 @@ if check_password():
                 # Map
                 st.map(df)
             except:
-                st.warning(body = 'No Officer in this range!', icon = "🚨")
+                st.info('No current data', icon = "ℹ️")
 
 
                 
