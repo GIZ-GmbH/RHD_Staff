@@ -348,18 +348,20 @@ if check_password():
                 if (datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) >= range_date[0] and datetime.date(datetime.strptime(row['Date from'], '%d/%m/%Y')) <= range_date[1]):
                     actual_data.append(row)
             actual_data = pd.DataFrame(actual_data)
-            places = actual_data['Place'].unique()
-            df = pd.DataFrame([[-13.9550205, 33.7101647]], columns = ['lat', 'lon'])
-            places_cordinates = read_sheet(sheet = 2)
-            for place in places:
-                for cordinate in places_cordinates['District']:
-                    if place == cordinate:
-                        lat = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lat.'].values)[1:-1]
-                        lon = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lon.'].values)[1:-1]
-                        df.loc[len(df.index)] = [float(lat), float(lon)]
             try:
+                places = actual_data['Place'].unique()
+                df = pd.DataFrame([[-13.9550205, 33.7101647]], columns = ['lat', 'lon'])
+                places_cordinates = read_sheet(sheet = 2)
+                for place in places:
+                    for cordinate in places_cordinates['District']:
+                        if place == cordinate:
+                            lat = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lat.'].values)[1:-1]
+                            lon = str(places_cordinates.loc[places_cordinates['District'] == cordinate]['lon.'].values)[1:-1]
+                            df.loc[len(df.index)] = [float(lat), float(lon)]
+                
                 # Map
                 st.map(df)
+
             except:
                 st.info('No current data', icon = "ℹ️")
 
